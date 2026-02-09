@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">測速照相警告</string>
+    
+    <!-- 主畫面 -->
+    <string name="title_main">測速照相警告</string>
+    <string name="camera_count">已載入 %d 個測速照相點</string>
+    <string name="status_ready">就緒</string>
+    <string name="status_tracking">監控中</string>
+    <string name="status_stopped">已停止</string>
+    <string name="status_loading">載入中...</string>
+    <string name="status_updating">更新中...</string>
+    
+    <!-- 按鈕 -->
+    <string name="btn_start_tracking">開始監控</string>
+    <string name="btn_stop_tracking">停止監控</string>
+    <string name="btn_map">📍 查看地圖</string>
+    <string name="btn_update_data">🔄 更新資料</string>
+    <string name="btn_settings">⚙️ 設定</string>
+    
+    <!-- 說明文字 -->
+    <string name="info_text">點擊「開始監控」後，App 將持續在背景運作，\n接近測速照相點時會自動通知您。</string>
+    
+    <!-- 通知 -->
+    <string name="notification_channel_name">測速照相警告</string>
+    <string name="notification_channel_description">接近測速照相點時的警告通知</string>
+    <string name="notification_title_warning">前方測速照相</string>
+    <string name="notification_text_warning">距離 %d 公尺，限速 %d km/h</string>
+    <string name="notification_title_service">背景監控中</string>
+    <string name="notification_text_service">正在監控附近的測速照相點</string>
+    
+    <!-- 權限 -->
+    <string name="permission_location_rationale">需要位置權限以監控附近的測速照相點</string>
+    <string name="permission_notification_rationale">需要通知權限以在接近測速照相點時提醒您</string>
+    <string name="permission_denied">權限被拒絕，部分功能可能無法使用</string>
+    
+    <!-- 錯誤訊息 -->
+    <string name="error_network">網路連線錯誤</string>
+    <string name="error_location">無法取得位置資訊</string>
+    <string name="error_data_load">資料載入失敗</string>
+    <string name="error_unknown">發生未知錯誤</string>
+    
+    <!-- 成功訊息 -->
+    <string name="success_data_updated">資料更新成功</string>
+    <string name="success_tracking_started">開始監控</string>
+    <string name="success_tracking_stopped">停止監控</string>
+</resources>
