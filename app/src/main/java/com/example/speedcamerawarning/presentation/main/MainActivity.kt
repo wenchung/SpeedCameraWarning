@@ -14,10 +14,13 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.speedcamerawarning.databinding.ActivityMainBinding
 import com.example.speedcamerawarning.service.LocationTrackingService
+import com.example.speedcamerawarning.service.SpeedOverlayService
 import com.example.speedcamerawarning.util.Constants
 import com.example.speedcamerawarning.util.PermissionHelper
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import android.provider.Settings
+import android.net.Uri
 
 /**
  * 主要 Activity
@@ -55,6 +58,21 @@ class MainActivity : AppCompatActivity() {
     ) { granted ->
         if (!granted) {
             Toast.makeText(this, "通知權限被拒絕，可能無法接收警告", Toast.LENGTH_LONG).show()
+        }
+    }
+    
+    private val overlayPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+        // 檢查權限是否已授予
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (Settings.canDrawOverlays(this)) {
+                binding.switchSpeedOverlay.isChecked = true
+                SpeedOverlayService.start(this)
+                Toast.makeText(this, "速度顯示已開啟", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this, "未授予懸浮視窗權限", Toast.LENGTH_SHORT).show()
+            }
         }
     }
     
@@ -98,7 +116,54 @@ class MainActivity : AppCompatActivity() {
                 // TODO: 開啟地圖頁面
                 Toast.makeText(this@MainActivity, "地圖功能開發中", Toast.LENGTH_SHORT).show()
             }
+            
+            // 懸浮視窗速度顯示開關
+            switchSpeedOverlay.setOnCheckedChangeListener { _, isChecked ->
+                if (isChecked) {
+                    // 檢查懸浮視窗權限
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        if (!Settings.canDrawOverlays(this@MainActivity)) {
+                            // 需要請求權限
+                            switchSpeedOverlay.isChecked = false
+                            showOverlayPermissionDialog()
+                        } else {
+                            // 已有權限，啟動懸浮視窗服務
+                            SpeedOverlayService.start(this@MainActivity)
+                            Toast.makeText(this@MainActivity, "速度顯示已開啟", Toast.LENGTH_SHORT).show()
+                        }
+                    } else {
+                        // Android M 以下不需要權限
+                        SpeedOverlayService.start(this@MainActivity)
+                        Toast.makeText(this@MainActivity, "速度顯示已開啟", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    // 關閉懸浮視窗服務
+                    SpeedOverlayService.stop(this@MainActivity)
+                    Toast.makeText(this@MainActivity, "速度顯示已關閉", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
+    }
+    
+    /**
+     * 顯示懸浮視窗權限說明對話框
+     */
+    private fun showOverlayPermissionDialog() {
+        AlertDialog.Builder(this)
+            .setTitle("需要懸浮視窗權限")
+            .setMessage("速度顯示功能需要懸浮視窗權限，才能在其他 App 上方顯示即時車速。\n\n請在設定中允許此權限。")
+            .setPositiveButton("前往設定") { _, _ ->
+                // 開啟系統設定頁面
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    val intent = Intent(
+                        Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                        Uri.parse("package:$packageName")
+                    )
+                    overlayPermissionLauncher.launch(intent)
+                }
+            }
+            .setNegativeButton("取消", null)
+            .show()
     }
     
     private fun setupObservers() {
