@@ -26,6 +26,9 @@
     
     <!-- 喚醒裝置權限 -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    
+    <!-- 懸浮視窗權限 (用於速度顯示) -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
     <application
         android:name=".SpeedCameraApp"
@@ -62,6 +65,13 @@
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="location"
+            android:stopWithTask="false" />
+        
+        <!-- 速度懸浮視窗服務 -->
+        <service
+            android:name=".service.SpeedOverlayService"
+            android:enabled="true"
+            android:exported="false"
             android:stopWithTask="false" />
         
         <!-- WorkManager Worker -->
