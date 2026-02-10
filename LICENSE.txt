@@ -1,0 +1,59 @@
+# Dual License
+
+This project is available under a dual licensing model:
+
+## 1. GNU Affero General Public License v3.0 (AGPLv3)
+
+**Free for:**
+- Open source projects
+- Personal use
+- Educational purposes
+- Non-commercial use
+
+For the full text of the AGPLv3 license, see [LICENSE-AGPL](LICENSE-AGPL) or visit:
+https://www.gnu.org/licenses/agpl-3.0.html
+
+**Key Requirements:**
+- You must disclose the source code of any modifications
+- If you run a modified version on a server, you must make the source available to users
+- Any derivative work must also be licensed under AGPLv3
+- You must preserve all copyright notices
+
+## 2. Commercial License
+
+**Required for:**
+- Proprietary/closed-source products
+- Commercial applications that cannot comply with AGPLv3 terms
+- Products where source code disclosure is not desired
+
+**To obtain a commercial license:**
+- Contact: cwthome@gmail.com
+- Subject: SpeedCameraWarning Commercial License Request
+
+**Commercial license benefits:**
+- No requirement to disclose source code
+- Freedom to use in proprietary products
+- No copyleft obligations
+- Priority support options available
+
+---
+
+## How to Choose
+
+### Use AGPLv3 if:
+- Your project is open source
+- You're using it for personal/educational purposes
+- You're comfortable sharing your source code
+- Your project is also AGPLv3 compatible
+
+### Use Commercial License if:
+- You're building a closed-source product
+- You cannot comply with AGPLv3 requirements
+- You need to integrate into proprietary software
+- You want additional support and services
+
+---
+
+**Copyright (c) 2025 Chiu Wen Chung**
+
+For questions about licensing, please contact: cwthome@gmail.com
