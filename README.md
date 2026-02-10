@@ -1,285 +1,344 @@
-# Speed Camera Warning App 🚗📷
+# Android 測速照相警告 App
 
-[![Android](https://img.shields.io/badge/Android-7.0%2B-green.svg)](https://developer.android.com)
-[![Kotlin](https://img.shields.io/badge/Kotlin-1.9.21-blue.svg)](https://kotlinlang.org)
-[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+基於政府開放資料平台的測速照相地點資料，提供即時定位警告功能的 Android 應用程式。
 
-Android 測速照相警示 App - 使用政府開放資料 API 即時提醒駕駛接近測速照相機位置
+## 資料來源
 
-## ✨ 功能特色
+- **資料集**: 測速執法設置點 (政府資料開放平台)
+- **資料集ID**: 7320
+- **下載網址**: https://data.gov.tw/dataset/7320
+- **API端點**: https://opdadm.moi.gov.tw/api/v1/no-auth/resource/api/dataset/EA5E6FCD-B82D-43B7-A5CF-E9893253187E/resource/264ACCFF-7C6A-4274-A543-1F226DEE5756/download
 
-- 🗺️ **即時位置追蹤** - 使用 GPS 持續監控你的位置和速度
-- 📍 **測速照相點資料** - 從政府開放平台自動同步全台測速照相點
-- 🔔 **距離警示** - 接近測速照相時分級提醒（500m/300m/100m）
-- 🔊 **語音播報** - TTS 語音提醒，專心開車免看手機
-- 🏃 **背景執行** - 前景服務確保 App 在背景持續運作
-- 💾 **離線功能** - 本地資料庫儲存，無網路也可運作
-- ⚡ **效能優化** - 智慧定位更新頻率，節省電量
+## 資料欄位說明
 
-## 📱 系統需求
+| 欄位名稱 | 說明 | 範例 |
+|---------|------|------|
+| CityName | 設置縣市 | 台北市 |
+| RegionName | 設置市區鄉鎮 | 中正區 |
+| Address | 設置地址 | 忠孝東路一段 |
+| DeptNm | 管轄警局 | 臺北市政府警察局 |
+| BranchNm | 管轄分局 | 中正第一分局 |
+| Longitude | 經度 | 121.5198 |
+| Latitude | 緯度 | 25.0478 |
+| direct | 拍攝方向 | 雙向 |
+| limit | 速限 | 50 |
 
-- Android 7.0 (API 24) 或更高版本
-- GPS 定位功能
-- 網路連線（首次同步資料時）
-- 儲存空間約 50MB
+## 功能特色
 
-## 🏗️ 技術架構
+### 核心功能
+- ✅ **即時定位監控**: 使用 GPS 持續追蹤使用者位置
+- ✅ **智慧警告系統**: 根據距離測速照相點的遠近，提供分級警告
+  - 1000m: 提前通知
+  - 500m: 警告提示
+  - 300m: 緊急警告
+- ✅ **語音播報**: 自動語音提示「前方500公尺有測速照相，速限XX公里」
+- ✅ **背景運作**: 使用 Foreground Service 確保 App 在背景持續運作
+- ✅ **離線運作**: 資料儲存在本地 SQLite 資料庫，無需網路連線
+- ✅ **地圖顯示**: 在地圖上標示附近的測速照相點位置
+- ✅ **懸浮視窗速度顯示**: 類似「神盾測速照相」的浮動速度表
+  - 即時顯示當前車速 (km/h)
+  - 根據超速程度自動變色警示：
+    - ⚪ **白色**: 正常行駛（未超速）
+    - 🔵 **藍色**: 輕微超速（速限 +0~10 km/h）
+    - 🟡 **黃色**: 中度超速（速限 +10~20 km/h）
+    - 🔴 **紅色**: 嚴重超速（速限 +20 km/h 以上）
+  - 可拖曳移動位置
+  - 懸浮於所有 App 之上
 
-### 核心技術棧
+### 進階功能
+- 🔔 **通知系統**: 狀態列通知顯示最近的測速照相點
+- 📊 **統計資訊**: 顯示已通過的測速照相點數量
+- 🎨 **懸浮速度表**: 
+  - 一鍵開啟/關閉速度顯示
+  - 自動判斷速限並變色警示
+  - 圓形設計，簡潔美觀
+  - 長按顯示關閉按鈕
+- ⚙️ **自訂設定**:
+  - 調整警告距離 (300m ~ 1500m)
+  - 開啟/關閉語音播報
+  - 選擇警告音效
+  - 設定最低觸發速度
+  - 開啟/關閉懸浮視窗速度顯示
 
-- **Language**: Kotlin
-- **Architecture**: MVVM (Model-View-ViewModel)
-- **Dependency Injection**: Hilt
-- **Database**: Room
-- **Network**: Retrofit + OkHttp
-- **Async**: Kotlin Coroutines + Flow
-- **Location**: Google Play Services Location API
-- **Background**: Foreground Service + WorkManager
+## 技術架構
 
-### 主要依賴
+### Architecture Pattern
+- **MVVM (Model-View-ViewModel)**: 清晰的職責分離
+- **Repository Pattern**: 統一的資料存取介面
+- **Dependency Injection**: 使用 Hilt/Dagger 進行依賴注入
 
-```gradle
-// Android Core
-androidx.core:core-ktx:1.12.0
-androidx.appcompat:appcompat:1.6.1
-androidx.lifecycle:lifecycle-runtime-ktx:2.7.0
+### 主要技術棧
 
-// UI
-androidx.constraintlayout:constraintlayout:2.1.4
-com.google.android.material:material:1.11.0
+#### Android Components
+- **Minimum SDK**: 24 (Android 7.0)
+- **Target SDK**: 34 (Android 14)
+- **Language**: Kotlin 1.9+
+
+#### Libraries & Frameworks
+```kotlin
+// 資料庫
+implementation "androidx.room:room-runtime:2.6.1"
+implementation "androidx.room:room-ktx:2.6.1"
+kapt "androidx.room:room-compiler:2.6.1"
+
+// 定位服務
+implementation "com.google.android.gms:play-services-location:21.1.0"
+implementation "com.google.android.gms:play-services-maps:18.2.0"
+
+// 協程 & Flow
+implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3"
+implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.7.0"
+
+// ViewModel & LiveData
+implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0"
+implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.7.0"
+
+// WorkManager (定期資料更新)
+implementation "androidx.work:work-runtime-ktx:2.9.0"
 
 // Dependency Injection
-com.google.dagger:hilt-android:2.48
+implementation "com.google.dagger:hilt-android:2.48"
+kapt "com.google.dagger:hilt-compiler:2.48"
 
-// Database
-androidx.room:room-runtime:2.6.1
-androidx.room:room-ktx:2.6.1
+// Network (資料下載)
+implementation "com.squareup.retrofit2:retrofit:2.9.0"
+implementation "com.squareup.retrofit2:converter-gson:2.9.0"
+implementation "com.squareup.okhttp3:logging-interceptor:4.12.0"
 
-// Network
-com.squareup.retrofit2:retrofit:2.9.0
-com.squareup.retrofit2:converter-gson:2.9.0
-
-// Location
-com.google.android.gms:play-services-location:21.1.0
-
-// Background Tasks
-androidx.work:work-runtime-ktx:2.9.0
+// UI
+implementation "androidx.constraintlayout:constraintlayout:2.1.4"
+implementation "com.google.android.material:material:1.11.0"
 ```
 
-## 📂 專案結構
+## 專案結構
 
 ```
 app/src/main/java/com/example/speedcamerawarning/
-├── SpeedCameraApp.kt                 # Application 類別
-├── data/                              # 資料層
+├── data/
 │   ├── local/
-│   │   ├── database/
-│   │   │   └── AppDatabase.kt        # Room 資料庫
 │   │   ├── dao/
-│   │   │   └── SpeedCameraDao.kt     # 資料存取物件
+│   │   │   └── SpeedCameraDao.kt
+│   │   ├── database/
+│   │   │   └── AppDatabase.kt
 │   │   └── entity/
-│   │       └── SpeedCameraEntity.kt  # 資料庫實體
+│   │       └── SpeedCameraEntity.kt
 │   ├── remote/
 │   │   ├── api/
-│   │   │   └── DataGovApi.kt         # API 介面定義
+│   │   │   └── DataGovApi.kt
 │   │   └── model/
-│   │       └── SpeedCameraResponse.kt # API 回應模型
+│   │       └── SpeedCameraResponse.kt
 │   └── repository/
-│       └── SpeedCameraRepository.kt  # 資料倉庫
-├── domain/                            # 領域層
-│   └── model/
-│       └── SpeedCamera.kt            # 領域模型
-├── presentation/                      # 呈現層
-│   └── main/
-│       ├── MainActivity.kt           # 主要 Activity
-│       └── MainViewModel.kt          # ViewModel
-├── service/                           # 服務層
-│   ├── LocationTrackingService.kt    # 位置追蹤前景服務
-│   └── NotificationHelper.kt         # 通知輔助類別
-└── util/                              # 工具類別
-    ├── Constants.kt                  # 常數定義
-    ├── DistanceCalculator.kt         # 距離計算
-    ├── LocationHelper.kt             # 位置輔助工具
-    └── PermissionHelper.kt           # 權限處理
+│       └── SpeedCameraRepository.kt
+├── domain/
+│   ├── model/
+│   │   └── SpeedCamera.kt
+│   └── usecase/
+│       ├── GetNearbySpeedCamerasUseCase.kt
+│       └── CalculateDistanceUseCase.kt
+├── presentation/
+│   ├── main/
+│   │   ├── MainActivity.kt
+│   │   └── MainViewModel.kt
+│   ├── map/
+│   │   ├── MapFragment.kt
+│   │   └── MapViewModel.kt
+│   └── settings/
+│       ├── SettingsFragment.kt
+│       └── SettingsViewModel.kt
+├── service/
+│   ├── LocationTrackingService.kt
+│   ├── SpeedOverlayService.kt
+│   └── NotificationHelper.kt
+├── util/
+│   ├── DistanceCalculator.kt
+│   ├── PermissionHelper.kt
+│   └── Constants.kt
+└── di/
+    ├── AppModule.kt
+    ├── DatabaseModule.kt
+    └── NetworkModule.kt
 ```
 
-## 🚀 快速開始
+## 權限需求
 
-### 前置需求
+```xml
+<!-- 必要權限 -->
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+<uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+<uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+<uses-permission android:name="android.permission.INTERNET" />
+<uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
-1. [Android Studio](https://developer.android.com/studio) (最新穩定版)
-2. Android SDK 34
-3. Gradle 8.2+
+<!-- Android 10+ 背景定位 -->
+<uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
 
-### 安裝步驟
-
-1. **Clone 專案**
-
-```bash
-git clone https://github.com/wenchung/SpeedCameraWarning.git
-cd SpeedCameraWarning
+<!-- Android 14+ 前景服務類型 -->
+<uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
 ```
 
-2. **用 Android Studio 開啟**
+## 使用流程
 
-```
-File → Open → 選擇專案資料夾
-```
-
-3. **Gradle 同步**
-
-等待 Android Studio 自動同步依賴（或點擊 "Sync Now"）
-
-4. **連接裝置**
-
-- 實體裝置：啟用 USB 偵錯
-- 或使用 Android 模擬器 (API 24+)
-
-5. **執行 App**
-
-點擊綠色播放按鈕或按 `Shift + F10`
-
-### 詳細執行指南
-
-完整的執行說明請參考 [RUN_INSTRUCTIONS.md](RUN_INSTRUCTIONS.md)
-
-## 🎯 使用方式
-
-### 首次使用
-
-1. **授予權限**
-   - 位置權限：選擇「一律允許」
-   - 通知權限：允許
-   - 前景服務權限：允許 (Android 14+)
-
-2. **同步資料**
-   - 點擊「同步測速照相資料」按鈕
-   - 等待資料下載完成（約 5-10 秒）
-
-3. **開始監控**
-   - 點擊「開始監控」按鈕
-   - 通知欄會顯示前景服務運作中
+### 首次啟動
+1. App 啟動後自動下載最新測速照相資料
+2. 資料儲存至本地 SQLite 資料庫
+3. 請求必要權限（定位、通知、前景服務）
 
 ### 日常使用
+1. 開啟 App 或點擊「開始監控」
+2. 前景服務開始運作，狀態列顯示通知
+3. App 持續監控位置，接近測速照相點時:
+   - 發送通知
+   - 語音播報 (可選)
+   - 震動提醒 (可選)
+4. 可切換到地圖頁面查看附近測速照相點
 
-- App 在背景持續監控位置
-- 接近測速照相時自動提醒
-- 可隨時停止監控以節省電力
+### 資料更新
+- **自動更新**: 每週自動從政府開放平台下載最新資料
+- **手動更新**: 設定頁面提供「立即更新」按鈕
 
-### 警示級別
+## 距離計算演算法
 
-| 距離 | 警示類型 | 說明 |
+使用 **Haversine公式** 計算兩個經緯度座標之間的距離：
+
+```kotlin
+fun calculateDistance(
+    lat1: Double, lon1: Double,
+    lat2: Double, lon2: Double
+): Double {
+    val R = 6371000.0 // 地球半徑（公尺）
+    val φ1 = Math.toRadians(lat1)
+    val φ2 = Math.toRadians(lat2)
+    val Δφ = Math.toRadians(lat2 - lat1)
+    val Δλ = Math.toRadians(lon2 - lon1)
+
+    val a = sin(Δφ / 2).pow(2) +
+            cos(φ1) * cos(φ2) *
+            sin(Δλ / 2).pow(2)
+    val c = 2 * atan2(sqrt(a), sqrt(1 - a))
+
+    return R * c // 距離（公尺）
+}
+```
+
+## 警告分級系統
+
+| 距離 | 警告等級 | 動作 |
 |------|---------|------|
-| 500m | 提醒通知 | 前方有測速照相 |
-| 300m | 重要提醒 | 注意速限 |
-| 100m | 警告 | 立即檢查速度 |
+| > 1000m | 無 | 無動作 |
+| 500m - 1000m | 提前通知 | 顯示通知 |
+| 300m - 500m | 警告 | 通知 + 語音播報 |
+| < 300m | 緊急警告 | 通知 + 語音 + 震動 |
 
-## 📊 資料來源
+## 效能優化
 
-本 App 使用以下政府開放資料：
+### 電池優化
+- 使用 `PRIORITY_BALANCED_POWER_ACCURACY` 定位模式
+- 動態調整定位頻率：
+  - 高速移動: 每2秒更新一次
+  - 低速移動: 每5秒更新一次
+  - 靜止: 每10秒更新一次
+- 只查詢周圍1公里內的測速照相點
 
-- **資料集**: 固定式測速照相設備設置點一覽表
-- **提供機關**: 中華民國交通部
-- **資料格式**: JSON
-- **更新頻率**: 不定期更新
+### 記憶體優化
+- 使用 Room 資料庫分頁載入
+- 只保留螢幕可見範圍的地圖標記
+- 及時釋放不需要的資源
 
-資料欄位包含：
-- 縣市別、鄉鎮、村里
-- 設置地點、速限
-- 經緯度座標
-- 設置方向
+### 網路優化
+- 資料壓縮傳輸
+- 僅在 WiFi 環境下自動更新（可設定）
+- 失敗重試機制
 
-## 🔒 隱私權政策
+## 安裝與建置
 
-- ✅ 位置資料僅用於本地計算距離
-- ✅ 不會上傳或儲存軌跡記錄
-- ✅ 不會收集個人識別資訊
-- ✅ 測速照相資料來自公開政府資料
+### 前置需求
+- Android Studio Hedgehog | 2023.1.1+
+- JDK 17+
+- Android SDK 34+
+- Gradle 8.0+
 
-## 🛠️ 開發指南
-
-### 建置 Debug APK
+### 建置步驟
 
 ```bash
+# 1. Clone 專案
+git clone https://github.com/yourusername/SpeedCameraWarning.git
+cd SpeedCameraWarning
+
+# 2. 開啟 Android Studio
+# File -> Open -> 選擇專案資料夾
+
+# 3. 同步 Gradle
+# 等待 Gradle sync 完成
+
+# 4. 連接裝置或啟動模擬器
+
+# 5. 執行 App
+# Run -> Run 'app'
+```
+
+### 建置 APK
+
+```bash
+# Debug APK
 ./gradlew assembleDebug
-# 輸出: app/build/outputs/apk/debug/app-debug.apk
-```
 
-### 建置 Release APK
-
-```bash
+# Release APK (需要簽署)
 ./gradlew assembleRelease
-# 輸出: app/build/outputs/apk/release/app-release.apk
 ```
 
-### 執行測試
+## 測試
 
 ```bash
-# 單元測試
+# 執行單元測試
 ./gradlew test
 
-# 整合測試
+# 執行 UI 測試
 ./gradlew connectedAndroidTest
 ```
 
-### 程式碼品質
+## 貢獻指南
 
-```bash
-# Lint 檢查
-./gradlew lint
+歡迎提交 Pull Request 或開 Issue 回報問題！
 
-# 查看報告
-open app/build/reports/lint-results.html
-```
+### 開發規範
+- 遵循 Kotlin coding conventions
+- 使用 MVVM 架構模式
+- 新增功能需包含單元測試
+- Commit message 使用中文或英文清楚描述
 
-## 🐛 已知問題
+## 授權
 
-- [ ] 部分地區測速照相點資料可能不完整
-- [ ] 模擬器上語音播報可能無效
-- [ ] 長時間使用會增加電量消耗
+本專案採用 MIT License
 
-## 🗺️ 未來規劃
+資料來源：政府資料開放平台 (CC BY 4.0)
 
-- [ ] 整合 Google Maps 顯示測速照相位置
-- [ ] 新增使用者自訂警示距離
-- [ ] 支援區間測速提醒
-- [ ] 新增駕駛統計與歷史記錄
-- [ ] 多語系支援（英文）
-- [ ] Wear OS 支援
+## 聯絡資訊
 
-## 🤝 貢獻指南
+- 開發者: Your Name
+- Email: your.email@example.com
+- GitHub: https://github.com/yourusername
 
-歡迎提交 Issue 或 Pull Request！
+## 更新日誌
 
-1. Fork 本專案
-2. 建立功能分支 (`git checkout -b feature/AmazingFeature`)
-3. Commit 你的變更 (`git commit -m 'Add some AmazingFeature'`)
-4. Push 到分支 (`git push origin feature/AmazingFeature`)
-5. 開啟 Pull Request
+### v1.0.0 (2024-02-09)
+- 初始版本發布
+- 基本測速照相警告功能
+- 地圖顯示功能
+- 語音播報功能
+- 背景監控功能
 
-## 📄 授權條款
+## 已知問題
 
-本專案採用 MIT License - 詳見 [LICENSE](LICENSE) 檔案
+- [ ] 部分 Android 廠商的省電模式可能影響背景定位
+- [ ] 首次下載資料需要較長時間
+- [ ] 隧道內 GPS 訊號弱可能無法準確定位
 
-## 👨‍💻 作者
+## 未來規劃
 
-**Chiu Wen Chung**
-- Email: cwthome@gmail.com
-- GitHub: [@wenchung](https://github.com/wenchung)
-
-## 🙏 致謝
-
-- 感謝交通部提供開放資料
-- 感謝 Android 開源社群的貢獻
-
-## 📞 聯絡方式
-
-如有問題或建議，歡迎：
-- 開啟 [GitHub Issue](https://github.com/wenchung/SpeedCameraWarning/issues)
-- Email: cwthome@gmail.com
-
----
-
-⚠️ **免責聲明**: 本 App 僅供參考，駕駛時仍應遵守交通規則，注意路況標示。開發者不對使用本 App 導致的任何後果負責。
-
-🚗 **安全駕駛，一路平安！**
+- [ ] 支援區間測速警告
+- [ ] 加入使用者回報功能
+- [ ] 支援車速顯示
+- [ ] 整合導航功能
+- [ ] 支援 Android Auto
+- [ ] 加入行車記錄功能
