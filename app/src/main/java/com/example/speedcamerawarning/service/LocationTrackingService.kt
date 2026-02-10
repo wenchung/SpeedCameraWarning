@@ -120,6 +120,13 @@ class LocationTrackingService : Service(), OnInitListener {
     private suspend fun handleLocationUpdate(location: Location) {
         lastLocation = location
         
+        // 獲取當前速度（m/s 轉換為 km/h）
+        val currentSpeedKmh = if (location.hasSpeed()) {
+            location.speed * 3.6f // m/s to km/h
+        } else {
+            0f
+        }
+        
         // 查詢附近的測速照相點
         val nearbyCameras = repository.getNearbyCameras(
             location.latitude,
@@ -131,6 +138,8 @@ class LocationTrackingService : Service(), OnInitListener {
             nearestCamera = null
             warnedCameras.clear()
             updateForegroundNotification(null, null)
+            // 更新懸浮視窗顯示速度（無速限）
+            SpeedOverlayService.updateSpeed(this, currentSpeedKmh, null)
             return
         }
         
@@ -156,6 +165,9 @@ class LocationTrackingService : Service(), OnInitListener {
             DistanceCalculator.formatDistance(closestDistance),
             closestCamera.address
         )
+        
+        // 更新懸浮視窗顯示速度和速限
+        SpeedOverlayService.updateSpeed(this, currentSpeedKmh, closestCamera.limit)
         
         // 檢查是否需要警告
         checkAndWarnIfNeeded(closestCamera, closestDistance)
