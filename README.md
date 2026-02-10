@@ -309,15 +309,54 @@ cd SpeedCameraWarning
 
 ## 授權
 
-本專案採用 MIT License
+本專案採用**雙重授權 (Dual License)** 模式：
 
-資料來源：政府資料開放平台 (CC BY 4.0)
+### 1. AGPLv3 授權 - 免費使用
+✅ **適用於：**
+- 開源專案
+- 個人使用
+- 教育用途
+- 非商業用途
+
+📄 完整授權條款請見 [LICENSE-AGPL](LICENSE-AGPL)
+
+**主要要求：**
+- 必須公開修改後的原始碼
+- 若在伺服器上執行修改版本，必須向使用者提供原始碼
+- 衍生作品也必須使用 AGPLv3 授權
+- 必須保留所有版權聲明
+
+### 2. 商業授權 - 專有軟體使用
+💼 **適用於：**
+- 專有/閉源產品
+- 無法遵守 AGPLv3 條款的商業應用
+- 不希望公開原始碼的產品
+
+**商業授權優勢：**
+- 無需公開原始碼
+- 可用於專有產品
+- 無 copyleft 義務
+- 提供優先技術支援
+
+**取得商業授權：**
+- 聯絡信箱: cwthome@gmail.com
+- 主旨: SpeedCameraWarning 商業授權洽詢
+
+📄 授權說明請見 [LICENSE.txt](LICENSE.txt)
+
+---
+
+**資料來源授權：** 政府資料開放平台 (CC BY 4.0)  
+**Copyright © 2025 Chiu Wen Chung**
 
 ## 聯絡資訊
 
-- 開發者: Your Name
-- Email: your.email@example.com
-- GitHub: https://github.com/yourusername
+- 開發者: Chiu Wen Chung
+- Email: cwthome@gmail.com
+- GitHub: https://github.com/wenchung/SpeedCameraWarning
+
+### 商業授權洽詢
+如需商業授權或技術支援，請聯絡: cwthome@gmail.com
 
 ## 更新日誌
 
